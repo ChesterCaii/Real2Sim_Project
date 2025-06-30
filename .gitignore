@@ -68,3 +68,29 @@ bunny_v2.stl
 
 # PLY files (intermediate format)
 *.ply
+
+# Large model files
+*.pth
+*.ckpt
+*.h5
+*.pkl
+
+# Generated meshes and large assets
+reconstructed_objects/
+segmented_objects/
+*.stl
+*.obj
+
+# Sample/temporary files
+sample_scene.png
+segmentation_result.png
+
+# MuJoCo Menagerie (publicly available, too large for git)
+mujoco_menagerie/
+
+# Exclude large mesh files but keep essential ones
+*.stl
+!bunny_final.stl
+
+# Temporary simulation files
+*.log

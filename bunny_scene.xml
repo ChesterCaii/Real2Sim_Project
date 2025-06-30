@@ -1,0 +1,37 @@
+<mujoco>
+  <!-- Part 1: Assets -->
+  <!-- Here we list all the external files we need, like our STL mesh. -->
+  <asset>
+    <!-- 'name' is how we refer to this mesh later. -->
+    <!-- 'file' is the path to the STL file. -->
+    <mesh name="bunny_mesh" file="bunny.stl" />
+  </asset>
+
+  <!-- Part 2: World Body -->
+  <!-- This section describes the physical world. -->
+  <worldbody>
+    <!-- Add a light source so we can see the object clearly. -->
+    <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 -1"/>
+    
+    <!-- Add a ground plane for the bunny to fall on. -->
+    <!-- 'size' is half-width, half-depth, thickness. -->
+    <!-- 'rgba' is the color (red, green, blue, alpha). -->
+    <geom type="plane" size="1 1 0.1" rgba=".9 0.9 0.9 1"/>
+
+    <!-- Add the bunny object! -->
+    <!-- 'pos' is the initial X, Y, Z position of the object. We start it in the air. -->
+    <body name="bunny" pos="0 0 0.2">
+      <!-- A 'free' joint allows the object to move and rotate freely in 6 dimensions. -->
+      <!-- This is what makes it a dynamic object instead of a static part of the scene. -->
+      <joint type="free"/>
+      
+      <!-- This is the geometry of the object. It links our body to the mesh asset. -->
+      <!-- We also define its physical properties here. -->
+      <geom type="mesh"
+            mesh="bunny_mesh"
+            mass="0.5" 
+            friction="1 0.005 0.0001"
+            rgba="0.8 0.2 0.2 1" /> <!-- Make it the same red color -->
+    </body>
+  </worldbody>
+</mujoco>

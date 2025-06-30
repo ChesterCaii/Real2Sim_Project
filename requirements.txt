@@ -1,0 +1,11 @@
+mujoco
+open3d
+numpy
+# Phase 3B: Object Segmentation dependencies
+torch
+torchvision
+opencv-python
+pillow
+matplotlib
+segment-anything
+ultralytics 

@@ -41,6 +41,9 @@ if mesh and mesh.has_triangles():
     mesh.remove_duplicated_vertices()
     mesh.remove_duplicated_triangles()
     mesh.remove_unreferenced_vertices()
+    
+    # Compute vertex normals (required for STL output)
+    mesh.compute_vertex_normals()
 
     # Let's visualize the final mesh
     print("Displaying the final reconstructed mesh.")
@@ -48,8 +51,8 @@ if mesh and mesh.has_triangles():
     o3d.visualization.draw_geometries([mesh])
 
     # Save the successful mesh to the STL file
-    output_filename = "bunny.stl"
-    o3d.io.write_triangle_mesh(output_filename, mesh, write_ascii=True)
+    output_filename = "bunny_final.stl"
+    o3d.io.write_triangle_mesh(output_filename, mesh)
     print(f"Success! Mesh saved to '{output_filename}'")
 
 else:
