@@ -119,20 +119,20 @@ def show_system_info():
     print(f"Working directory: {os.getcwd()}")
     print()
     
-    # Check key dependencies
+    # Check key dependencies with correct import names
     dependencies = [
-        ("numpy", "Core computation"),
-        ("open3d", "3D processing"), 
-        ("opencv-python", "Computer vision"),
-        ("mujoco", "Physics simulation"),
-        ("ultralytics", "YOLO object detection"),
-        ("scipy", "Scientific computing")
+        ("numpy", "Core computation", "numpy"),
+        ("open3d", "3D processing", "open3d"), 
+        ("opencv-python", "Computer vision", "cv2"),
+        ("mujoco", "Physics simulation", "mujoco"),
+        ("ultralytics", "YOLO object detection", "ultralytics"),
+        ("scipy", "Scientific computing", "scipy")
     ]
     
     print("📦 Key Dependencies:")
-    for package, description in dependencies:
+    for package, description, import_name in dependencies:
         try:
-            __import__(package.replace('-', '_'))
+            __import__(import_name)
             status = "✅ Installed"
         except ImportError:
             status = "❌ Missing"
