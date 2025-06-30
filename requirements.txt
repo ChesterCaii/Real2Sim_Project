@@ -9,3 +9,8 @@ pillow
 matplotlib
 segment-anything
 ultralytics 
+
+# Phase 4: Camera Integration dependencies
+pyrealsense2>=2.54.1  # Intel RealSense SDK
+opencv-contrib-python  # Extended OpenCV features
+imutils  # Image processing utilities 

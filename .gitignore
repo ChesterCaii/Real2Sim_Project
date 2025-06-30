@@ -27,10 +27,15 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # PyInstaller
 *.manifest
 *.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
@@ -94,3 +99,38 @@ mujoco_menagerie/
 
 # Temporary simulation files
 *.log
+
+# Large model files (download separately)
+models/*.pth
+models/*.pkl
+models/*.ckpt
+models/*.bin
+*.pth
+
+# Generated outputs (can be recreated)
+outputs/segmented_objects/*
+outputs/reconstructed_objects/*
+!outputs/segmented_objects/.gitkeep
+!outputs/reconstructed_objects/.gitkeep
+
+# Temporary simulation files
+temp_*.xml
+live_scene_*.xml
+live_object_*.stl
+
+# Large mesh files (project-specific)
+data/meshes/*.stl
+!data/meshes/.gitkeep
+
+# Camera debugging
+*.avi
+*.mp4
+*.mov
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+logs/
