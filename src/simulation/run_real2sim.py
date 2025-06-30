@@ -32,11 +32,14 @@ def main():
     # Check if running with mjpython (required on macOS)
     if sys.platform == "darwin" and "mjpython" not in sys.executable:
         print("⚠️  On macOS, this script should be run with 'mjpython'")
-        print("   Try: mjpython run_real2sim.py")
+        print("   Try: mjpython src/simulation/run_real2sim.py")
         print()
     
+    # Get the project root directory (two levels up from src/simulation/)
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    
     # Path to our combined scene
-    scene_path = "robot_bunny_scene.xml"
+    scene_path = os.path.join(project_root, "data", "scenes", "robot_bunny_scene.xml")
     
     if not os.path.exists(scene_path):
         print("❌ Error: Combined scene file not found!")
@@ -96,8 +99,8 @@ def main():
                 print(f"❌ Alternative viewer also failed: {alt_error}")
                 print("\n💡 Alternative: Save the scene and view it externally")
                 print("   You can:")
-                print("   1. Use MuJoCo's standalone viewer: mujoco_menagerie/franka_emika_panda/robot_bunny_scene.xml")
-                print("   2. Or run: mjpython -m mujoco.viewer mujoco_menagerie/franka_emika_panda/robot_bunny_scene.xml")
+                print(f"   1. Use MuJoCo's standalone viewer: {scene_path}")
+                print(f"   2. Or run: mjpython -m mujoco.viewer {scene_path}")
                 return
         
     except Exception as e:

@@ -1,9 +1,14 @@
 import open3d as o3d
 import numpy as np
+import os
+
+# Get the project root directory (two levels up from src/reconstruction/)
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 # --- Step 1: Load and prepare the point cloud ---
 print("Loading point cloud...")
-pcd = o3d.io.read_point_cloud("bunny.pcd")
+input_path = os.path.join(project_root, "data", "point_clouds", "bunny.pcd")
+pcd = o3d.io.read_point_cloud(input_path)
 
 print("Estimating normals for the point cloud...")
 pcd.estimate_normals(
@@ -51,11 +56,18 @@ if mesh and mesh.has_triangles():
     o3d.visualization.draw_geometries([mesh])
 
     # Save the successful mesh to the STL file
-    output_filename = "bunny_final.stl"
-    o3d.io.write_triangle_mesh(output_filename, mesh)
-    print(f"Success! Mesh saved to '{output_filename}'")
+    output_path = os.path.join(project_root, "data", "meshes", "bunny_final.stl")
+    o3d.io.write_triangle_mesh(output_path, mesh)
+    print(f"Success! Mesh saved to '{output_path}'")
 
 else:
     print("\n--- RECONSTRUCTION FAILED ---")
     print("Both Poisson and Ball Pivoting algorithms failed to create a mesh.")
     print("Try adjusting parameters or using a different point cloud.")
+
+def main():
+    """Main function for the reconstruction script"""
+    pass
+
+if __name__ == "__main__":
+    main()

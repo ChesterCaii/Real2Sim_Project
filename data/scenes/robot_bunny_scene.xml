@@ -46,7 +46,7 @@
 
   <asset>
     <!-- Bunny mesh (use direct path) -->
-    <mesh name="bunny_mesh" file="bunny_final.stl" />
+    <mesh name="bunny_mesh" file="../meshes/bunny_final.stl" />
     
     <!-- Robot materials -->
     <material class="panda" name="white" rgba="1 1 1 1"/>
