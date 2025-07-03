@@ -13,13 +13,16 @@ pcd = o3d.io.read_point_cloud(input_path)
 print("Estimating normals for the point cloud...")
 pcd.estimate_normals(
     search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.01, max_nn=30))
+# Orient normals consistently
+pcd.orient_normals_consistent_tangent_plane(20)
 
-# --- Step 2: Try Poisson Surface Reconstruction ---
-print("\nAttempting reconstruction with Poisson algorithm...")
-mesh = None # Initialize mesh to None
+# --- Step 2: Enhanced Poisson Surface Reconstruction ---
+print("\nAttempting ENHANCED reconstruction with Poisson algorithm...")
+mesh = None
 with o3d.utility.VerbosityContextManager(o3d.utility.VerbosityLevel.Debug) as cm:
+    # Use higher depth for more detail
     mesh, densities = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(
-        pcd, depth=9)
+        pcd, depth=10, width=0, scale=1.1, linear_fit=False)
 
 # --- Step 3: Check if Poisson worked. If not, try Ball Pivoting ---
 if not mesh or not mesh.has_triangles():
@@ -37,28 +40,61 @@ if not mesh or not mesh.has_triangles():
     mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(
         pcd, o3d.utility.DoubleVector(radii))
 
-# --- Step 4: Final check and save the result ---
+# --- Step 4: ENHANCED mesh processing for better visuals ---
 if mesh and mesh.has_triangles():
-    print("\nReconstruction successful!")
+    print(f"\n Initial reconstruction successful!")
+    print(f"  Vertices: {len(mesh.vertices)}")
+    print(f"  Triangles: {len(mesh.triangles)}")
     
-    # Clean up the mesh a little
+    print("\n Enhancing mesh quality...")
+    
+    # 1. Clean up the mesh
     mesh.remove_degenerate_triangles()
     mesh.remove_duplicated_vertices()
     mesh.remove_duplicated_triangles()
     mesh.remove_unreferenced_vertices()
     
-    # Compute vertex normals (required for STL output)
+    # 2. Filter out low-density vertices (improves surface quality)
+    if 'densities' in locals():
+        densities = np.asarray(densities)
+        density_threshold = np.quantile(densities, 0.01)  # Remove bottom 1%
+        vertices_to_remove = densities < density_threshold
+        mesh.remove_vertices_by_mask(vertices_to_remove)
+    
+    # 3. Smooth the mesh using Laplacian smoothing
+    print("    Applying Laplacian smoothing...")
+    mesh = mesh.filter_smooth_laplacian(number_of_iterations=5, lambda_filter=0.5)
+    
+    # 4. Subdivide mesh for smoother appearance (if not too large)
+    if len(mesh.triangles) < 50000:
+        print("    Subdividing mesh for smoother surface...")
+        mesh = mesh.subdivide_midpoint(number_of_iterations=1)
+        # Apply another round of smoothing after subdivision
+        mesh = mesh.filter_smooth_laplacian(number_of_iterations=3, lambda_filter=0.3)
+    
+    # 5. Compute high-quality vertex normals
     mesh.compute_vertex_normals()
+    
+    print(f"\n Enhanced mesh quality:")
+    print(f"    Final Vertices: {len(mesh.vertices)}")
+    print(f"    Final Triangles: {len(mesh.triangles)}")
 
-    # Let's visualize the final mesh
-    print("Displaying the final reconstructed mesh.")
-    mesh.paint_uniform_color([0.8, 0.2, 0.2]) # Red
-    o3d.visualization.draw_geometries([mesh])
+    # Let's visualize the enhanced mesh
+    print("\n👀 Displaying the enhanced reconstructed mesh...")
+    mesh.paint_uniform_color([0.8, 0.3, 0.3])  # Nice red color
+    o3d.visualization.draw_geometries([mesh], 
+                                    window_name="Enhanced Bunny Mesh",
+                                    mesh_show_back_face=True)
 
-    # Save the successful mesh to the STL file
+    # Save the enhanced mesh
     output_path = os.path.join(project_root, "data", "meshes", "bunny_final.stl")
     o3d.io.write_triangle_mesh(output_path, mesh)
-    print(f"Success! Mesh saved to '{output_path}'")
+    print(f"\n SUCCESS! Enhanced mesh saved to '{output_path}'")
+    
+    # Also save as OBJ for better normals
+    obj_path = os.path.join(project_root, "data", "meshes", "bunny_final.obj")
+    o3d.io.write_triangle_mesh(obj_path, mesh)
+    print(f" Also saved as OBJ: '{obj_path}'")
 
 else:
     print("\n--- RECONSTRUCTION FAILED ---")

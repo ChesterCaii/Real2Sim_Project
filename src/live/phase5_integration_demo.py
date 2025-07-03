@@ -27,11 +27,11 @@ class Phase5IntegratedSystem:
     
     def __init__(self):
         """Initialize the integrated system"""
-        print("🚀 Phase 5: Integrated Real2Sim System")
+        print(" Phase 5: Integrated Real2Sim System")
         print("=" * 60)
         
         if not ADVANCED_MODULES_AVAILABLE:
-            print("❌ Advanced modules not available. Please check imports.")
+            print(" Advanced modules not available. Please check imports.")
             return
         
         # Initialize components
@@ -51,13 +51,13 @@ class Phase5IntegratedSystem:
         if not ADVANCED_MODULES_AVAILABLE:
             return
         
-        print("\n🎬 Starting live demo...")
+        print("\n Starting live demo...")
         print("Controls: 'q' to quit, 's' to save frame, 'g' to plan grasps")
         
         # Try to open camera
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():
-            print("❌ No camera available. Running static demo instead...")
+            print(" No camera available. Running static demo instead...")
             self.run_static_demo()
             return
         
@@ -67,7 +67,7 @@ class Phase5IntegratedSystem:
         while True:
             ret, frame = cap.read()
             if not ret:
-                print("❌ Failed to read from camera")
+                print(" Failed to read from camera")
                 break
             
             frame_count += 1
@@ -80,7 +80,7 @@ class Phase5IntegratedSystem:
                 
                 # Display detection info
                 if results['statistics']['total_objects'] > 0:
-                    print(f"🎯 Frame {frame_count}: {results['statistics']['total_objects']} objects detected")
+                    print(f" Frame {frame_count}: {results['statistics']['total_objects']} objects detected")
                     for class_name, count in results['statistics']['object_classes'].items():
                         print(f"   • {count}x {class_name}")
             else:
@@ -101,7 +101,7 @@ class Phase5IntegratedSystem:
                 # Save current frame
                 filename = f"phase5_frame_{frame_count}.jpg"
                 cv2.imwrite(filename, results['visualization'])
-                print(f"💾 Saved: {filename}")
+                print(f" Saved: {filename}")
             elif key == ord('g') and current_time - last_grasp_time > 2.0:
                 # Plan grasps for current detections
                 if 'objects' in results and results['objects']:
@@ -114,21 +114,21 @@ class Phase5IntegratedSystem:
     
     def run_static_demo(self):
         """Run demo with static/simulated data"""
-        print("\n🎭 Running static demo with simulated objects...")
+        print("\n Running static demo with simulated objects...")
         
         # Create simulated scene
         simulated_objects = self._create_simulated_scene()
         
         # Analyze the scene
-        print("\n📊 Scene Analysis:")
+        print("\n Scene Analysis:")
         self._analyze_simulated_scene(simulated_objects)
         
         # Demonstrate grasp planning
-        print("\n🤖 Grasp Planning Demo:")
+        print("\n Grasp Planning Demo:")
         self._demonstrate_grasp_planning(simulated_objects)
         
         # Show integration benefits
-        print("\n🔄 Integration Benefits:")
+        print("\n Integration Benefits:")
         self._show_integration_benefits()
     
     def _process_frame(self, frame: np.ndarray, frame_count: int) -> Dict:
@@ -142,7 +142,7 @@ class Phase5IntegratedSystem:
             
             return results
         except Exception as e:
-            print(f"⚠️  Frame processing error: {e}")
+            print(f"  Frame processing error: {e}")
             return {'visualization': frame, 'statistics': {'total_objects': 0}}
     
     def _add_system_overlay(self, frame: np.ndarray, frame_count: int):
@@ -254,30 +254,30 @@ class Phase5IntegratedSystem:
     def _show_integration_benefits(self):
         """Show the benefits of the integrated system"""
         benefits = [
-            "🎯 Real-time object classification (80+ classes)",
-            "🤖 Object-specific grasp strategies",
-            "📊 Scene complexity analysis",
-            "⚡ Automated action suggestions",
-            "🔄 Continuous learning from failures",
-            "📈 Performance metrics tracking",
-            "🎮 Interactive real-time control",
-            "🔧 Modular system architecture"
+            " Real-time object classification (80+ classes)",
+            " Object-specific grasp strategies",
+            " Scene complexity analysis",
+            " Automated action suggestions",
+            " Continuous learning from failures",
+            " Performance metrics tracking",
+            " Interactive real-time control",
+            " Modular system architecture"
         ]
         
-        print("\n🚀 Phase 5 Integration Benefits:")
+        print("\n Phase 5 Integration Benefits:")
         for benefit in benefits:
             print(f"   {benefit}")
     
     def _print_final_stats(self):
         """Print final system statistics"""
-        print("\n📊 Final Statistics:")
+        print("\n Final Statistics:")
         print("=" * 40)
         print(f"Total objects processed: {self.total_objects_processed}")
         print(f"Successful grasps: {self.successful_grasps}")
         if self.total_objects_processed > 0:
             success_rate = (self.successful_grasps / self.total_objects_processed) * 100
             print(f"Success rate: {success_rate:.1f}%")
-        print("✅ Phase 5 demo completed successfully!")
+        print("Phase 5 demo completed successfully!")
 
 def main():
     """Main demo function"""
@@ -304,9 +304,9 @@ def main():
             system.run_live_demo()
         
     except KeyboardInterrupt:
-        print("\n👋 Demo interrupted by user")
+        print("\n Demo interrupted by user")
     except Exception as e:
-        print(f"❌ Demo error: {e}")
+        print(f" Demo error: {e}")
         import traceback
         traceback.print_exc()
 

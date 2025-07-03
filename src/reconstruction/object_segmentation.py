@@ -15,7 +15,7 @@ try:
     from segment_anything import sam_model_registry, SamAutomaticMaskGenerator, SamPredictor
     import torch
 except ImportError:
-    print("❌ SAM dependencies not installed. Install with:")
+    print(" SAM dependencies not installed. Install with:")
     print("   pip install segment-anything torch torchvision")
     sys.exit(1)
 
