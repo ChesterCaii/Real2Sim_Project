@@ -1,0 +1,135 @@
+# Real2Sim PickAndPlace RL Training Configuration
+# Hyperparameters and settings for training policies
+
+# Environment Settings
+environment:
+  name: "Real2SimPickAndPlace"
+  reconstructed_objects_dir: "reconstructed_objects"
+  reward_type: "sparse"  # "sparse" or "dense"
+  max_episode_steps: 200
+  
+  # Domain Randomization
+  object_randomization: true
+  physics_randomization: true
+  
+  # Randomization Ranges
+  object_mass_range: [0.05, 0.2]  # kg
+  friction_range: [0.5, 1.5]
+  object_size_range: [0.8, 1.2]  # scale factor
+
+# Training Settings
+training:
+  algorithm: "ppo"  # "ppo", "sac", "ddpg"
+  num_envs: 4096    # Parallel environments (adjust for your GPU)
+  total_timesteps: 1_000_000
+  seed: 42
+  
+  # Logging
+  log_interval: 10
+  eval_interval: 100
+  save_interval: 1000
+  log_dir: "data/rl_logs"
+  model_save_dir: "data/trained_models"
+
+# PPO Hyperparameters
+ppo:
+  learning_rate: 3e-4
+  num_steps: 1024
+  batch_size: 256
+  num_epochs: 10
+  clip_range: 0.2
+  value_clip_range: 0.2
+  gamma: 0.99
+  gae_lambda: 0.95
+  entropy_coef: 0.01
+  value_coef: 0.5
+  max_grad_norm: 0.5
+
+# SAC Hyperparameters
+sac:
+  learning_rate: 3e-4
+  buffer_size: 1_000_000
+  batch_size: 256
+  gamma: 0.99
+  tau: 0.005
+  alpha: 0.2
+  target_update_interval: 1
+
+# DDPG Hyperparameters (if implemented)
+ddpg:
+  learning_rate: 1e-4
+  buffer_size: 1_000_000
+  batch_size: 128
+  gamma: 0.99
+  tau: 0.005
+  exploration_noise: 0.1
+
+# Evaluation Settings
+evaluation:
+  num_episodes: 100
+  deterministic: true
+  render: false
+  save_video: false
+
+# GPU/CPU Settings
+compute:
+  use_gpu: true
+  precision: "float32"  # "float32" or "float16"
+  
+  # Memory optimization
+  gradient_accumulation: 1
+  mixed_precision: false
+
+# Task-specific Settings
+task:
+  # Success criteria
+  distance_threshold: 0.05  # 5cm
+  
+  # Robot control
+  position_control: true
+  max_velocity: 1.0
+  
+  # Reward shaping (for dense rewards)
+  grasp_bonus: 0.1
+  success_bonus: 10.0
+  
+  # Action space
+  action_scale: 1.0
+  action_noise: 0.0
+
+# Sim-to-Real Transfer Settings
+sim2real:
+  # Domain randomization during training
+  visual_randomization: true
+  dynamics_randomization: true
+  sensor_noise: true
+  
+  # Noise levels
+  position_noise: 0.001  # m
+  orientation_noise: 0.01  # rad
+  force_noise: 0.1  # N
+  
+  # Physics variations
+  gravity_range: [9.6, 10.0]  # m/s^2
+  timestep_range: [0.001, 0.003]  # s
+
+# Benchmarking Settings
+benchmark:
+  compare_algorithms: ["ppo", "sac"]
+  num_seeds: 5
+  parallel_training: true
+  
+  # Performance targets
+  target_success_rate: 0.8
+  target_training_time: 3600  # seconds
+  
+# Vision-based Training (if using Madrona)
+vision:
+  enabled: false
+  image_size: [64, 64]
+  camera_positions: ["overhead", "side"]
+  
+  # Domain randomization for vision
+  lighting_randomization: true
+  texture_randomization: true
+  background_randomization: true 

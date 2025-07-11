@@ -54,7 +54,7 @@ class IntelligentRobotControl:
         print(f"📡 Found {len(self.joint_ids)} joints")
         print(f"🎮 Found {len(self.actuator_ids)} actuators")
         print(f"🎯 Behavior Modes: Exploration → Inspection → Manipulation → Demo")
-        
+    
     def get_bunny_position(self):
         """Get the bunny object position"""
         try:

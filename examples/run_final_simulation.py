@@ -11,7 +11,7 @@ print("Creating bunny and world model...")
 world_and_bunny_xml = """
 <mujoco>
   <asset>
-    <mesh name="bunny_mesh" file="bunny_final.stl" />
+    <mesh name="bunny_mesh" file="data/meshes/bunny_final.stl" />
   </asset>
   <worldbody>
     <geom type="plane" size="2 2 0.1" rgba=".9 .9 .9 1"/>

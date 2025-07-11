@@ -10,7 +10,7 @@ import subprocess
 
 def print_banner():
     """Print the pipeline banner"""
-    print("🚀 Real2Sim Pipeline - Complete System")
+    print("Real2Sim Pipeline - Complete System")
     print("=" * 50)
     print("Transform real-world point clouds into interactive robot simulations")
     print()
@@ -53,6 +53,18 @@ def show_phases():
             "description": "YOLO detection + Intelligent grasp planning",
             "file": "src/live/phase5_integration_demo.py",
             "status": " Latest Feature"
+        },
+        "6": {
+            "name": "RL Training Setup",
+            "description": "Setup MuJoCo Playground for RL training",
+            "file": "setup_mujoco_playground.py",
+            "status": " RL Extension"
+        },
+        "7": {
+            "name": "RL Training", 
+            "description": "Train pick-and-place policies with parallel environments",
+            "file": "src/rl_training/train_real2sim_pickup.py",
+            "status": " RL Extension"
         }
     }
     
@@ -60,8 +72,8 @@ def show_phases():
     print()
     for phase_id, phase_info in phases.items():
         print(f"Phase {phase_id}: {phase_info['name']}")
-        print(f"   📝 {phase_info['description']}")
-        print(f"   📁 {phase_info['file']}")
+        print(f"   {phase_info['description']}")
+                  print(f"   File: {phase_info['file']}")
         print(f"   {phase_info['status']}")
         print()
 
@@ -73,7 +85,9 @@ def run_phase(phase_id: str):
         "3a": ("mjpython", "src/control/robot_control_demo.py"), 
         "3b": ("python", "src/reconstruction/reconstruct_multi_objects.py"),
         "4": ("python", "src/live/camera_integration.py"),
-        "5": ("python", "src/live/phase5_integration_demo.py")
+        "5": ("python", "src/live/phase5_integration_demo.py"),
+        "6": ("python", "setup_mujoco_playground.py"),
+        "7": ("python", "src/rl_training/train_real2sim_pickup.py")
     }
     
     if phase_id not in phase_commands:
@@ -106,7 +120,7 @@ def run_phase(phase_id: str):
         return result.returncode == 0
         
     except KeyboardInterrupt:
-        print(f"\n⏹️  Phase {phase_id} interrupted by user")
+        print(f"\nPhase {phase_id} interrupted by user")
         return False
     except Exception as e:
         print(f" Error running Phase {phase_id}: {e}")
@@ -161,7 +175,7 @@ def main():
     
     # Interactive mode
     while True:
-        print("\n🎮 Interactive Mode:")
+        print("\nInteractive Mode:")
         print("Enter phase number (1, 2, 3a, 3b, 4, 5)")
         print("Or type: 'list' (show phases), 'info' (system info), 'quit' (exit)")
         
