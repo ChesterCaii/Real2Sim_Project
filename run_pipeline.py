@@ -68,12 +68,12 @@ def show_phases():
         }
     }
     
-    print("📋 Available Phases:")
+    print("Available Phases:")
     print()
     for phase_id, phase_info in phases.items():
         print(f"Phase {phase_id}: {phase_info['name']}")
         print(f"   {phase_info['description']}")
-                  print(f"   File: {phase_info['file']}")
+        print(f"   File: {phase_info['file']}")
         print(f"   {phase_info['status']}")
         print()
 
@@ -176,7 +176,7 @@ def main():
     # Interactive mode
     while True:
         print("\nInteractive Mode:")
-        print("Enter phase number (1, 2, 3a, 3b, 4, 5)")
+        print("Enter phase number (1, 2, 3a, 3b, 4, 5, 6, 7)")
         print("Or type: 'list' (show phases), 'info' (system info), 'quit' (exit)")
         
         choice = input("\n👉 Your choice: ").strip().lower()
@@ -188,7 +188,7 @@ def main():
             show_phases()
         elif choice in ['info', 'system', 'i']:
             show_system_info()
-        elif choice in ['1', '2', '3a', '3b', '4', '5']:
+        elif choice in ['1', '2', '3a', '3b', '4', '5', '6', '7']:
             success = run_phase(choice)
             if success:
                 print(f"\n Phase {choice} completed! Ready for next phase.")
@@ -196,7 +196,7 @@ def main():
                 print(f"\n  Phase {choice} had issues. Check output above.")
         else:
             print(f" Unknown command: {choice}")
-            print("Available: 1, 2, 3a, 3b, 4, 5, list, info, quit")
+            print("Available: 1, 2, 3a, 3b, 4, 5, 6, 7, list, info, quit")
 
 if __name__ == "__main__":
     main() 

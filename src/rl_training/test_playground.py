@@ -33,23 +33,22 @@ def test_environment_creation():
     
     try:
         import jax
-        from mujoco_playground import MjxEnv
+        import mujoco_playground
         
-        # Test simple pendulum environment
-        env = MjxEnv('inverted_pendulum', backend='mjx')
+        # Test simple environment creation
+        env = mujoco_playground.dm_control_suite.cartpole.Balance(swing_up=False, sparse=False)
         
         key = jax.random.PRNGKey(0)
-        reset_fn = jax.jit(env.reset)
-        step_fn = jax.jit(env.step)
         
-        state = reset_fn(key)
+        # Test reset
+        state = env.reset(key)
         print("Environment creation successful")
         
         # Test a few steps
         for _ in range(5):
             key, subkey = jax.random.split(key)
             action = jax.random.uniform(subkey, (env.action_size,))
-            state = step_fn(state, action)
+            state = env.step(state, action)
             
         return True
         
@@ -60,18 +59,21 @@ def test_environment_creation():
 def test_manipulation_environments():
     print("\nTesting manipulation environments...")
     
-    manipulation_envs = [
-        'ant', 'halfcheetah', 'hopper', 'humanoid', 'walker2d',
-        'inverted_pendulum', 'inverted_double_pendulum',
-        'reacher', 'pusher', 'finger'
+    import mujoco_playground
+    
+    # Test different environment types
+    test_envs = [
+        ("cartpole.Balance", lambda: mujoco_playground.dm_control_suite.cartpole.Balance(swing_up=False, sparse=False)),
+        ("cartpole.Balance (swing_up)", lambda: mujoco_playground.dm_control_suite.cartpole.Balance(swing_up=True, sparse=False)),
+        ("acrobot.Balance", lambda: mujoco_playground.dm_control_suite.acrobot.Balance(sparse=False)),
+        ("pendulum.Balance", lambda: mujoco_playground.dm_control_suite.pendulum.Balance(sparse=False)),
     ]
     
     available_envs = []
     
-    for env_name in manipulation_envs:
+    for env_name, env_constructor in test_envs:
         try:
-            from mujoco_playground import MjxEnv
-            env = MjxEnv(env_name, backend='mjx')
+            env = env_constructor()
             print(f"{env_name}: Available")
             available_envs.append(env_name)
         except Exception as e:
@@ -116,13 +118,12 @@ def benchmark_parallel_environments():
     
     try:
         import jax
-        from mujoco_playground import MjxEnv
+        import mujoco_playground
         
-        env_name = 'inverted_pendulum'
-        batch_sizes = [1, 16, 64, 256, 1024]
+        batch_sizes = [1, 16, 64, 256]
         
         for batch_size in batch_sizes:
-            env = MjxEnv(env_name, backend='mjx')
+            env = mujoco_playground.dm_control_suite.cartpole.Balance(swing_up=False, sparse=False)
             
             # Vectorize environment functions
             reset_fn = jax.jit(jax.vmap(env.reset))

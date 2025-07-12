@@ -16,12 +16,8 @@ def check_gpu():
         import jax
         return len(jax.devices('gpu')) > 0
     except ImportError:
-        print("GPU acceleration available")
-    except Exception:
-        print("WARNING: GPU not available, will use CPU")
         return False
-    except ImportError:
-        print("ERROR: JAX not installed")
+    except Exception:
         return False
 
 def install_mujoco_playground():
@@ -43,10 +39,10 @@ def install_mujoco_playground():
             sys.executable, "-m", "pip", "install", "--upgrade", "jax"
         ], check=True)
     
-    # Install MuJoCo Playground
+    # Install MuJoCo Playground (correct package name is 'playground')
     print("Installing MuJoCo Playground...")
     subprocess.run([
-        sys.executable, "-m", "pip", "install", "--upgrade", "mujoco-playground"
+        sys.executable, "-m", "pip", "install", "--upgrade", "playground"
     ], check=True)
     
     # Install additional RL dependencies
@@ -87,7 +83,7 @@ def verify_installation():
         return False
     
     try:
-        from mujoco_playground import environments
+        from mujoco_playground import envs
         print("Playground environments accessible")
     except Exception as e:
         print(f"WARNING: Playground test failed: {e}")
