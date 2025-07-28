@@ -4,7 +4,8 @@ Real-to-Simulation Pipeline - Final Demo
 =========================================
 
 This script loads the combined Franka Panda robot and reconstructed bunny mesh
-into a single MuJoCo physics simulation.
+into a single MuJoCo physics simulation. It includes an option to record a
+video of the simulation.
 
 Usage:
     mjpython run_real2sim.py
@@ -13,6 +14,7 @@ Requirements:
     - MuJoCo Python bindings
     - mujoco_menagerie (Franka robot models)
     - bunny_final.stl (reconstructed mesh)
+    - imageio (for video recording)
 
 Author: Real2Sim Project
 """
@@ -22,6 +24,7 @@ import mujoco.viewer
 import sys
 import os
 import time
+import imageio
 
 def main():
     print("=" * 60)
@@ -35,7 +38,7 @@ def main():
         print("   Try: mjpython src/simulation/run_real2sim.py")
         print()
     
-    # Get the project root directory (two levels up from src/simulation/)
+    # Get the project root directory
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     
     # Path to our combined scene
@@ -59,58 +62,47 @@ def main():
         print(f"    Actuators: {model.nu}")
         print()
         
-        print(" Scene Contents:")
-        for i in range(model.nbody):
-            body_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, i)
-            if body_name and body_name != "world":
-                icon = "🤖" if "link" in body_name or "hand" in body_name or "finger" in body_name else "🐰"
-                print(f"   {icon} {body_name}")
-        print()
+        # --- Video Recording Logic ---
+        record_video_choice = input("Record a 10-second video? (y/n): ").lower().strip()
         
-        print(" Launching interactive viewer...")
-        print(" Controls:")
-        print("   • Mouse: Rotate camera")
-        print("   • Right-click + drag: Pan camera") 
-        print("   • Scroll: Zoom in/out")
-        print("   • Space: Pause/unpause physics")
-        print("   • Ctrl+R: Reset simulation")
-        print()
-        print(" SUCCESS! Your Real-to-Simulation pipeline is working!")
-        print("   You should see the Franka robot and reconstructed bunny in the viewer.")
-        print()
-        
-        # Try different viewer launch methods
-        try:
-            print(" Attempting to launch viewer...")
-            # Use passive launch with a proper wait loop
-            with mujoco.viewer.launch_passive(model, data) as viewer:
-                print(" Viewer launched! Press Ctrl+C to exit or close the viewer window.")
-                # Keep the script running while viewer is open
-                while viewer.is_running():
-                    time.sleep(0.1)
-        except Exception as viewer_error:
-            print(f"  Viewer launch failed: {viewer_error}")
-            print(" Trying alternative method...")
+        if record_video_choice == 'y':
+            duration = 10
+            framerate = 60
+            frames = []
             
-            # Alternative: try the basic launch
-            try:
-                mujoco.viewer.launch(model, data)
-            except Exception as alt_error:
-                print(f" Alternative viewer also failed: {alt_error}")
-                print("\n Alternative: Save the scene and view it externally")
-                print("   You can:")
-                print(f"   1. Use MuJoCo's standalone viewer: {scene_path}")
-                print(f"   2. Or run: mjpython -m mujoco.viewer {scene_path}")
-                return
+            print(f"\\n🎥 Recording a {duration}-second video at {framerate} FPS...")
+            
+            # Reset simulation for recording
+            mujoco.mj_resetData(model, data)
+            
+            # Simulate and capture frames
+            renderer = mujoco.Renderer(model)
+            while data.time < duration:
+                mujoco.mj_step(model, data)
+                if len(frames) < data.time * framerate:
+                    renderer.update_scene(data)
+                    pixels = renderer.render()
+                    frames.append(pixels)
+            
+            # Save the video
+            video_path = os.path.join(project_root, "simulation_video.mp4")
+            with imageio.get_writer(video_path, fps=framerate) as writer:
+                for frame in frames:
+                    writer.append_data(frame)
+            
+            print(f"Video saved successfully to: {video_path}")
+            return # Exit after recording
+
+        # --- Interactive Viewer Logic ---
+        print("\\nLaunching interactive viewer...")
+        mujoco.viewer.launch(model, data)
         
     except Exception as e:
-        print(f" Error occurred: {e}")
-        print()
-        print(" Troubleshooting:")
-        print("   1. Make sure you're using 'mjpython' instead of 'python'")
-        print("   2. Check that all mesh files are in the assets directory")
-        print("   3. Verify that bunny_final.stl was created successfully")
+        print(f"\\nAn error occurred: {e}")
+        print("\\nTroubleshooting:")
+        print("  1. Make sure 'imageio' is installed: pip install imageio")
+        print("  2. If on macOS, run with 'mjpython'")
         return
 
 if __name__ == "__main__":
-    main() 
+    main()

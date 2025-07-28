@@ -154,3 +154,19 @@ logs/
 *.jpg
 *.png
 *.gif
+*.mp4
+*.avi
+*.mov
+
+# Large model files
+*.pt
+yolov8*.pt
+
+# Temporary demo files
+*_demo.xml
+quick_*.py
+temp_*.py
+
+# System files
+.DS_Store
+Thumbs.db

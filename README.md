@@ -16,14 +16,31 @@ Transform real-world point clouds into interactive MuJoCo robot simulations. Thi
 ## Current Status
 
 **WORKING**: Complete end-to-end pipeline from static files to real-time camera integration
-- ✅ 3D reconstruction: `bunny.pcd` → `bunny_final.stl` (469KB mesh)
-- ✅ Scene loading: 13 bodies, 16 DOF, 68 meshes, 8 actuators  
-- ✅ Interactive simulation: MuJoCo viewer with robot + reconstructed bunny
-- ✅ **Phase 3A**: Robot control and manipulation of reconstructed objects
-- ✅ **Phase 3B**: Object segmentation and multi-object reconstruction  
-- ✅ **Phase 4**: Real camera integration with live object detection
+- [DONE] 3D reconstruction: `bunny.pcd` → `bunny_final.stl` (469KB mesh)
+- [DONE] Scene loading: 13 bodies, 16 DOF, 68 meshes, 8 actuators  
+- [DONE] Interactive simulation: MuJoCo viewer with robot + reconstructed bunny
+- [DONE] **Phase 3A**: Robot control and manipulation of reconstructed objects
+- [DONE] **Phase 3B**: Object segmentation and multi-object reconstruction  
+- [DONE] **Phase 4**: Real camera integration with live object detection
 
-## Quick Start
+## Quick Demo
+
+### Franka Panda + Real Scanned Object Demo
+Experience the complete Real2Sim pipeline with a professional robot arm:
+
+```bash
+# Run the main demo (from project root)
+mjpython examples/franka_panda_real2sim_demo.py
+
+# Choose option 1 for interactive exploration
+# Choose option 2 for automatic manipulation sequence
+```
+
+**What you'll see:**
+- **Real Franka Emika Panda robot** (industry-standard research robot)
+- **Real 3D scanned mustard bottle** (from Yale-CMU-Berkeley Object Dataset)
+- **10-step manipulation sequence**: Home → Approach → Grasp → Lift → Move → Place → Release → Return
+- **Full physics simulation** with proper dynamics, friction, and collision detection
 
 ### Prerequisites
 ```bash
